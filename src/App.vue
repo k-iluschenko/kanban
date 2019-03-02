@@ -22,11 +22,13 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  height: 100%;
 }
 html, body{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-size: 18px;
+  height: 100%;
 }
 </style>

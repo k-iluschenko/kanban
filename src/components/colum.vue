@@ -2,15 +2,19 @@
   <div class="board__colum">
     <div class="colum__header" :class="color">{{header}} ({{count}})</div>
     <div class="colum__section">
-      <card-item />
-      <card-item />
-      <add-card-item />
+      <template v-for='list in lists'>
+        <card-item :key='list.id' :list='list'/>
+      </template>
+      <add-card-item v-if="!isShow" :type="header" :isError="isError" />
     </div>
-    <div class="colum__footer">
-      <div class="button active">Добавить карточку</div> <div class="clear"></div>
+    <div class="colum__footer" v-if="!isShow" >
+      <div class="button active" @click="addCard">
+        Добавить карточку
+      </div>
+      <div class="clear" @click="showButton"></div>
     </div>
-    <div class="colum__footer">
-      <div class="button">Добавить карточку</div>
+    <div class="colum__footer" v-if="isShow" >
+      <div class="button" @click="showButton">Добавить карточку</div>
     </div>
   </div>
 </template>
@@ -23,11 +27,41 @@ export default {
   props: {
     header: String,
     color: String,
+    lists: Array,
   },
   data() {
     return {
-      count: 0,
+      isShow: true,
+      isError: false
     };
+  },
+  methods: {
+    showButton() {
+      this.isShow = !this.isShow;
+      this.isError = false;
+    },
+    addCard() {
+      console.log('addCard', this.getNewCard)
+      if (Object.keys(this.getNewCard).length) {
+        this.$store.dispatch('addCard', this.getNewCard);
+        this.showButton();
+      } else {
+        this.isError = true;
+
+        
+      };
+    },
+  },
+  computed: {
+    count() {
+      if (!this.lists) {
+        return 0;
+      }
+      return this.lists.length;
+    },
+    getNewCard() {
+      return this.$store.getters.getNewCard;
+    }
   },
   components: {
     cardItem, addCardItem,

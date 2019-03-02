@@ -1,8 +1,8 @@
 <template>
   <div class="block">
-    <div class="wrap__close"><div class="button__close"></div></div>
-    <div class="block__title"><span class="id">id:</span> 1212312342343</div>
-    <div class="block__content">qweqweqw</div>
+    <div class="wrap__close"><div class="button__close" @click='closeTask'></div></div>
+    <div class="block__title"><span class="id">id: </span>{{list.id}}</div>
+    <div class="block__content">{{list.title}} - {{list.type}}</div>
   </div>
 </template>
 <script>
@@ -10,6 +10,12 @@
 export default {
   name: 'colum',
   props: {
+    list: Object,
+  },
+  methods: {
+    closeTask(e) {
+      console.log('closeTask', e);
+    },
   },
 };
 </script>
@@ -23,7 +29,7 @@ $color-button-text: #82838A;
   font-weight: 700;
 }
 .block {
-  text-align-last: left;
+  text-align: left;
   margin: 8px 0;
   height: 100px;
   padding-left: 8px;
@@ -39,10 +45,6 @@ $color-button-text: #82838A;
   padding: 8px 8px 0;
 }
 .button__close {
-  //position: relative;
-  //top: 7px;
-  //right: 0;
-  //display: inline-block;
   width: 8px;
   height: 8px;
   background-color: $color-button-text;

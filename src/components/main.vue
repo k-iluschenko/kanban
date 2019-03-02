@@ -1,10 +1,10 @@
 <template>
 <section class=" bg-dark">
   <div class="wrapper">
-     <colum-board header="on hold" color="orange" />
-    <colum-board header="in progress" color="blue" />
-    <colum-board header="needs review" color="yellow" />
-    <colum-board header="approved" color="green" />
+    <colum-board header="on hold" color="orange" :lists='listOnHold'/>
+    <colum-board header="in progress" color="blue" :lists='listInProgress'/>
+    <colum-board header="needs review" color="yellow" :lists='listNeedsReview'/>
+    <colum-board header="approved" color="green" :lists='listApproved'/>
   </div>
 </section>
 </template>
@@ -14,6 +14,20 @@ import columBoard from './colum.vue';
 
 export default {
   name: 'MainPage',
+  computed: {
+    listOnHold() {
+      return this.$store.getters.getList;
+    },
+    listInProgress() {
+      return null;
+    },
+    listNeedsReview() {
+      return null;
+    },
+    listApproved() {
+      return null;
+    },
+  },
   components: {
     columBoard,
   },
@@ -30,14 +44,15 @@ $color-header-text: #ECE6E6;
 
 .bg-dark {
   background: $color-bg;
-  height: 100%;
+  min-height: 100%;
 }
 .wrapper {
  padding-top: 20px;
  display: flex;
  flex-direction: row;
  flex-wrap: wrap;
- justify-content: space-around;
+ //justify-content: space-around;
+ align-items: flex-start;
 }
 .orange {
   background: $color-header-orange
@@ -51,7 +66,6 @@ $color-header-text: #ECE6E6;
 .yellow {
   background: $color-header-yellow
 }
-
 
 .colum__header {
   text-transform: uppercase;
