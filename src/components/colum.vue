@@ -1,13 +1,8 @@
 <template>
   <div class="board__colum" :data-type="type">
     <div class="colum__header" :class="color">{{header}} ({{count}})</div>
-    <div class="colum__section"
-    @dragover.prevent @drop="dragFinish(type, $event)"
-    >
-
-      <!-- <draggable v-model="myArray" :options="{group:'type'}" @start="drag=true" @end="drag=false"> -->
-  
-    <template v-for='list in lists'>
+    <div class="colum__section" @dragover.prevent @drop="dragFinish(type, $event)">
+      <template v-for='list in lists'>
         <card-item 
           :key='list.id'
           :list='list'
@@ -16,8 +11,6 @@
           :dragend="dragEnd"
         />
       </template>
-<!-- </draggable> -->
-     
       <add-card-item v-if="!isShow" :type="type" :isError="isError" />
     </div>
     <div class="colum__footer" v-if="isShow" >
@@ -86,7 +79,7 @@ export default {
     },
     moveItem(from, to) {
       console.log(from, to);
-      this.$store.commit('updateCard', { id: from, type: to });
+      this.$store.commit('updateCard', { card: from, type: to });
       // if (to === -1) {
       //   this.removeItemAt(from);
       // } else {

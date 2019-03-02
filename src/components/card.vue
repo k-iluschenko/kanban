@@ -1,7 +1,7 @@
 <template>
   <div class="block"
   draggable="true"
-  @dragstart="dragstart(list.id, $event)"
+  @dragstart="dragstart(list, $event)"
   @dragend="dragend">
     <div class="wrap__close"><div class="button__close" @click='closeTask'></div></div>
     <div class="block__title"><span class="id">id: </span>{{list.id}}</div>

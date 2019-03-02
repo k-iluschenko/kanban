@@ -8,13 +8,29 @@ export default new Vuex.Store({
   state: {
     count: 100,
     newCard: {},
-    list: [],
+    listAll: [],
+    onHoldList: [],
+    inProgressList: [],
+    needsReviewList: [],
+    approvedList: [],
     dragging: -1,
   },
   plugins: [createPersistedState()],
   getters: {
     getList(state) {
       return state.list;
+    },
+    getListOnHold(state) {
+      return state.onHoldList;
+    },
+    getListInProgress(state) {
+      return state.inProgressList;
+    },
+    getListNeedsReview(state) {
+      return state.needsReviewList;
+    },
+    getListApproved(state) {
+      return state.approvedList;
     },
     getNewCard(state) {
       return state.newCard;
@@ -31,11 +47,11 @@ export default new Vuex.Store({
     setCount(state) {
       state.count = ++state.count;
     },
-    setLIst(state, list) {
-      state.list = list;
+    setLIst(state, { list, variable }) {
+      state[variable] = list;
     },
-    addCardToList(state, card) {
-      state.list.push(card);
+    addCardToList(state, { card, variable }) {
+      state[variable].push(card);
     },
     setNewCard(state, { title, type }) {
       state.newCard.title = title;
@@ -45,12 +61,14 @@ export default new Vuex.Store({
       state.newCard = {};
     },
     updateCard(state, value) {
-      const card = state.list.find(item => item.id === value.id);
+      const variableFrom = `${value.card.type}List`
+      const variableTo = `${value.type}List`
+      const card = state[variableFrom].find(item => item.id === value.card.id);
       if (card) {
-        card.type = value.type;
+        state[variableFrom].splice(state[variableFrom].indexOf(card), 1)
+        card.type = value.type
+        state[variableTo].push(card);
       }
-      console.log(card);
-      console.log(value);
     },
   },
   actions: {
@@ -61,12 +79,15 @@ export default new Vuex.Store({
         title,
         type,
       };
-      commit('addCardToList', card);
+      const str = type //.split('_').map(item => ucFirst(item)).join('');
+      const variable= `${str}List`;
+      commit('addCardToList', { card, variable });
     },
     deleteCard({ state, commit }, card) {
-      const newList = state.list.slice();
+      const variable = `${card.type}List`
+      const newList = state[variable].slice();
       newList.splice(newList.indexOf(card), 1);
-      commit('setLIst', newList);
+      commit('setLIst', { list: newList, variable });
     },
   },
 });
