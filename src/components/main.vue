@@ -1,10 +1,10 @@
 <template>
 <section class=" bg-dark">
   <div class="wrapper">
-    <colum-board header="on hold" color="orange" :lists='listOnHold'/>
-    <colum-board header="in progress" color="blue" :lists='listInProgress'/>
-    <colum-board header="needs review" color="yellow" :lists='listNeedsReview'/>
-    <colum-board header="approved" color="green" :lists='listApproved'/>
+    <colum-board header="on hold" color="orange" :lists='listOnHold' type="on_hold"/>
+    <colum-board header="in progress" color="blue" :lists='listInProgress' type="in_progress"/>
+    <colum-board header="needs review" color="yellow" :lists='listNeedsReview' type="needs_review"/>
+    <colum-board header="approved" color="green" :lists='listApproved' type="approved"/>
   </div>
 </section>
 </template>
@@ -18,17 +18,17 @@ export default {
     getList() {
       return this.$store.getters.getList;
     },
-    listOnHold() { 
+    listOnHold() {
       return this.getList.filter(item => item.type === 'on_hold');
     },
     listInProgress() {
       return this.getList.filter(item => item.type === 'in_progress');
     },
     listNeedsReview() {
-       return this.getList.filter(item => item.type === 'needs_review');
+      return this.getList.filter(item => item.type === 'needs_review');
     },
     listApproved() {
-       return this.getList.filter(item => item.type === 'approved');
+      return this.getList.filter(item => item.type === 'approved');
     },
   },
   components: {

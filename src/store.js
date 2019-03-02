@@ -8,8 +8,8 @@ export default new Vuex.Store({
   state: {
     count: 100,
     newCard: {},
-    list: [
-    ],
+    list: [],
+    dragging: -1,
   },
   plugins: [createPersistedState()],
   getters: {
@@ -19,8 +19,15 @@ export default new Vuex.Store({
     getNewCard(state) {
       return state.newCard;
     },
+    getDragging(state) {
+      return state.dragging;
+    },
+
   },
   mutations: {
+    setDragging(state, value) {
+      state.dragging = value
+    },
     setCount(state) {
       state.count = ++state.count;
     },
@@ -35,8 +42,16 @@ export default new Vuex.Store({
       state.newCard.type = type;
     },
     clearNewCard(state) {
-      state.newCard = {}
-    }
+      state.newCard = {};
+    },
+    updateCard(state, value) {
+      const card = state.list.find(item => item.id === value.id);
+      if (card) {
+        card.type = value.type;
+      }
+      console.log(card);
+      console.log(value);
+    },
   },
   actions: {
     addCard({ commit }, { title, type }) {
@@ -49,10 +64,10 @@ export default new Vuex.Store({
       commit('addCardToList', card);
     },
     deleteCard({ state, commit }, card) {
-      let newList = state.list.slice();
-      newList.splice(newList.indexOf(card), 1)
+      const newList = state.list.slice();
+      newList.splice(newList.indexOf(card), 1);
       commit('setLIst', newList);
-    }
+    },
   },
 });
 

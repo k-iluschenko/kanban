@@ -1,8 +1,11 @@
 <template>
-  <div class="block">
+  <div class="block"
+  draggable="true"
+  @dragstart="dragstart(list.id, $event)"
+  @dragend="dragend">
     <div class="wrap__close"><div class="button__close" @click='closeTask'></div></div>
     <div class="block__title"><span class="id">id: </span>{{list.id}}</div>
-    <div class="block__content">{{list.title}} - {{list.type}}</div>
+    <div class="block__content">{{list.title}}</div>
   </div>
 </template>
 <script>
@@ -11,11 +14,12 @@ export default {
   name: 'colum',
   props: {
     list: Object,
+    dragstart: Function,
+    dragend: Function,
   },
   methods: {
     closeTask(e) {
-      console.log('closeTask', e);
-       this.$store.dispatch('deleteCard', this.list);
+      this.$store.dispatch('deleteCard', this.list);
     },
   },
 };

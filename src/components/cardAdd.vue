@@ -24,13 +24,10 @@ export default {
     this.clearCard();
   },
   computed: {
-    getType() {
-      return this.type.split(' ').join('_');
-    },
   },
   methods: {
     changeTitle(e) {
-      this.$store.commit('setNewCard', { title: this.title, type: this.getType });
+      this.$store.commit('setNewCard', { title: this.title, type: this.type });
     },
     clearCard() {
       this.$store.commit('clearNewCard');
