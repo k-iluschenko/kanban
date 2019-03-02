@@ -23,16 +23,19 @@ export default new Vuex.Store({
     setCount(state) {
       state.count = ++state.count;
     },
+    setLIst(state, list) {
+      state.list = list;
+    },
     addCardToList(state, card) {
       state.list.push(card);
     },
-  setNewCard(state, { title, type }) {
-    state.newCard.title = title;
-    state.newCard.type = type;
-  },
-  clearNewCard(state) {
-    state.newCard = {}
-  }
+    setNewCard(state, { title, type }) {
+      state.newCard.title = title;
+      state.newCard.type = type;
+    },
+    clearNewCard(state) {
+      state.newCard = {}
+    }
   },
   actions: {
     addCard({ commit }, { title, type }) {
@@ -44,6 +47,11 @@ export default new Vuex.Store({
       };
       commit('addCardToList', card);
     },
+    deleteCard({ state, commit }, card) {
+      let newList = state.list.slice();
+      newList.splice(newList.indexOf(card), 1)
+      commit('setLIst', newList);
+    }
   },
 });
 

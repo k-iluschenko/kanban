@@ -15,17 +15,20 @@ import columBoard from './colum.vue';
 export default {
   name: 'MainPage',
   computed: {
-    listOnHold() {
+    getList() {
       return this.$store.getters.getList;
     },
+    listOnHold() { 
+      return this.getList.filter(item => item.type === 'on_hold');
+    },
     listInProgress() {
-      return null;
+      return this.getList.filter(item => item.type === 'in_progress');
     },
     listNeedsReview() {
-      return null;
+       return this.getList.filter(item => item.type === 'needs_review');
     },
     listApproved() {
-      return null;
+       return this.getList.filter(item => item.type === 'approved');
     },
   },
   components: {

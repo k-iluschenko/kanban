@@ -15,6 +15,7 @@ export default {
   methods: {
     closeTask(e) {
       console.log('closeTask', e);
+       this.$store.dispatch('deleteCard', this.list);
     },
   },
 };
