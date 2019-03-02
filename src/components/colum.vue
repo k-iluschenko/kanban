@@ -79,6 +79,8 @@ $color-bg-colum: #303038;
   background: $color-bg-colum;
   min-width: 250px;
   margin: 0 10px 24px;
+  display: flex;
+  flex-direction: column;
 }
 .colum__section{
   margin: 0 8px 8px;
@@ -127,8 +129,8 @@ $color-bg-colum: #303038;
     }
   }
 }
-
 .clear {
+  cursor: pointer;
   position: relative;
   top: 7px;
   display: inline-block;
@@ -139,4 +141,11 @@ $color-bg-colum: #303038;
   mask: url('../assets/img/baseline-clear-24px.svg') no-repeat center;
   }
 
+@media (max-width: 1080px) {
+  .board__colum{
+    &:nth-child(n + 3) {
+      order: 1;
+    }
+  }
+}
 </style>

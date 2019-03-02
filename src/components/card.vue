@@ -46,6 +46,7 @@ $color-button-text: #82838A;
   padding: 8px 8px 0;
 }
 .button__close {
+  cursor: pointer;
   width: 8px;
   height: 8px;
   background-color: $color-button-text;

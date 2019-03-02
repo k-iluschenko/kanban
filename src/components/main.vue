@@ -50,12 +50,10 @@ $color-header-text: #ECE6E6;
   min-height: 100%;
 }
 .wrapper {
- padding-top: 20px;
- display: flex;
- flex-direction: row;
- flex-wrap: wrap;
- //justify-content: space-around;
- align-items: flex-start;
+  padding-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
 }
 .orange {
   background: $color-header-orange
@@ -77,4 +75,14 @@ $color-header-text: #ECE6E6;
   color: $color-header-text;
 }
 
+@media (max-width: 1080px) {
+  .wrapper{
+    justify-content: center;
+    &::after{
+      content: '';
+      width: 100%;
+      order: 0;
+    }
+  }
+}
 </style>
