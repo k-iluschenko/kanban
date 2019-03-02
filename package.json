@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "vue": "^2.6.6",
-    "vuex": "^3.0.1"
+    "vue-smooth-dnd": "^0.2.8",
+    "vuex": "^3.0.1",
+    "vuex-persistedstate": "^2.5.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.4.0",
