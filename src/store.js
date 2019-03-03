@@ -9,16 +9,32 @@ export default new Vuex.Store({
     count: 100,
     newCard: {},
     listAll: [],
-    onHoldList: [],
-    inProgressList: [],
+    onHoldList: [{
+      id: 10,
+      title: 'onHoldList test',
+    },
+    {
+      id: 11,
+      title: 'onHoldList test',
+    },
+    ],
+    inProgressList: [
+      {
+        id: 20,
+        title: 'inProgress test',
+      },
+      {
+        id: 21,
+        title: 'inProgress test',
+      },
+    ],
     needsReviewList: [],
     approvedList: [],
-    dragging: -1,
   },
   plugins: [createPersistedState()],
   getters: {
     getList(state) {
-      return state.list;
+      return state.listAll;
     },
     getListOnHold(state) {
       return state.onHoldList;
@@ -35,15 +51,8 @@ export default new Vuex.Store({
     getNewCard(state) {
       return state.newCard;
     },
-    getDragging(state) {
-      return state.dragging;
-    },
-
   },
   mutations: {
-    setDragging(state, value) {
-      state.dragging = value
-    },
     setCount(state) {
       state.count = ++state.count;
     },
@@ -53,38 +62,25 @@ export default new Vuex.Store({
     addCardToList(state, { card, variable }) {
       state[variable].push(card);
     },
-    setNewCard(state, { title, type }) {
+    setNewCard(state, { title }) {
       state.newCard.title = title;
-      state.newCard.type = type;
     },
     clearNewCard(state) {
       state.newCard = {};
     },
-    updateCard(state, value) {
-      const variableFrom = `${value.card.type}List`
-      const variableTo = `${value.type}List`
-      const card = state[variableFrom].find(item => item.id === value.card.id);
-      if (card) {
-        state[variableFrom].splice(state[variableFrom].indexOf(card), 1)
-        card.type = value.type
-        state[variableTo].push(card);
-      }
-    },
   },
   actions: {
-    addCard({ commit }, { title, type }) {
+    addCard({ commit }, { card, type }) {
       commit('setCount');
-      const card = {
+      const Newcard = {
         id: this.state.count,
-        title,
-        type,
+        title: card.title,
       };
-      const str = type //.split('_').map(item => ucFirst(item)).join('');
-      const variable= `${str}List`;
-      commit('addCardToList', { card, variable });
+      const variable = `${type}List`;
+      commit('addCardToList', { card: Newcard, variable });
     },
-    deleteCard({ state, commit }, card) {
-      const variable = `${card.type}List`
+    deleteCard({ state, commit }, { card, type }) {
+      const variable = `${type}List`;
       const newList = state[variable].slice();
       newList.splice(newList.indexOf(card), 1);
       commit('setLIst', { list: newList, variable });
@@ -101,6 +97,7 @@ export default new Vuex.Store({
 //     type: '',
 //   },
 // ];
+
 // Один массив из 4х элементов по типу колонки??
 // let list = [
 //   {

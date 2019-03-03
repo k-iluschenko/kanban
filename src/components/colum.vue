@@ -1,20 +1,29 @@
 <template>
-  <div class="board__colum" :data-type="type">
-    <div class="colum__header" :class="color">{{header}} ({{count}})</div>
-    <div class="colum__section" @dragover.prevent @drop="dragFinish(type, $event)">
-      <template v-for='list in lists'>
-        <card-item 
-          :key='list.id'
-          :list='list'
-          :draggable="true"
-          :dragstart="dragStart"
-          :dragend="dragEnd"
-        />
-      </template>
-      <add-card-item v-if="!isShow" :type="type" :isError="isError" />
+  <div class="board__colum" >
+    <div class="colum__header " :class="color">{{header}} ({{lists.length}})</div>
+    <div class="colum__section">
+      <Container
+        group-name="1"
+        :get-child-payload="getChildPayload1"
+        @drop="onDrop('localLists', $event)"
+      >
+        <Draggable v-for="card in lists" :key="card.id">
+          <card-item :card="card" :type="type" />
+        </Draggable>
+      </Container>
+      <add-card-item
+        v-if="!isShow"
+        :isError="isError"
+        :type="type"
+        :addCard="addCard"
+        :show="showButton"
+      />
     </div>
     <div class="colum__footer" v-if="isShow" >
-      <div class="button" @click="showButton"  @dragover.prevent @drop="dragFinish(type, $event)">Добавить карточку</div>
+      <div class="button" @click="showButton">
+        <div class="add_card"></div>
+        Добавить карточку
+      </div>
     </div>
     <div class="colum__footer" v-else>
       <div class="button active" @click="addCard">
@@ -25,6 +34,9 @@
   </div>
 </template>
 <script>
+import { Container, Draggable } from 'vue-smooth-dnd';
+import { applyDrag } from '../assets/utils';
+
 import cardItem from './card.vue';
 import addCardItem from './cardAdd.vue';
 
@@ -36,61 +48,52 @@ export default {
     lists: Array,
     type: String,
   },
+  updated() {
+    this.localLists = this.lists;
+  },
   data() {
     return {
       isShow: true,
       isError: false,
-      draggin: this.type,
+      localLists: this.lists,
     };
+  },
+  watch: {
+    localLists(value) {
+      const variable = `${this.type}List`;
+      this.$store.commit('setLIst', { list: value, variable });
+    },
   },
   methods: {
     showButton() {
       this.isShow = !this.isShow;
       this.isError = false;
     },
-    addCard() {
-      if (Object.keys(this.getNewCard).length) {
-        this.$store.dispatch('addCard', this.getNewCard);
-        this.showButton();
-      } else {
-        this.isError = true;
+    addCard(e) {
+      const activeButton = e.currentTarget ? Array.from(e.currentTarget.classList).find(item => item === 'active') : '';
+      if (e.keyCode === 13 || activeButton === 'active') {
+        if (Object.keys(this.getNewCard).length) {
+          this.$store.dispatch('addCard', { card: this.getNewCard, type: this.type });
+          this.showButton();
+        } else {
+          this.isError = true;
+          const self = this;
+          setTimeout(() => { self.isError = false; }, 1000);
+        }
       }
     },
-    dragStart(which, ev) {
-      console.log('dragStart', ev);
-      console.log('dragStart', which);
-      ev.dataTransfer.setData('Text', which);
-      ev.dataTransfer.dropEffect = 'move';
-      // this.dragging = which;
-      this.$store.commit('setDragging', which);
-      console.log('dragStart', this.dragging);
+    getChildPayload1(index) {
+      return this.lists[index];
     },
-    dragEnd(ev) {
-      console.log('dragEnd', ev);
-      this.$store.commit('setDragging', -1);
+    closeTask() {
+      const variable = `${this.type}List`;
+      this.$store.dispatch('deleteCard', { card: this.list, variable });
     },
-    dragFinish(to, ev) {
-      console.log('dragFinish', to);
-      console.log('dragFinish', this.dragging);
-
-      this.moveItem(this.dragging, to);
-    // ev.target.style.marginTop = '2px'
-    // ev.target.style.marginBottom = '2px'
-    },
-    moveItem(from, to) {
-      console.log(from, to);
-      this.$store.commit('updateCard', { card: from, type: to });
-      // if (to === -1) {
-      //   this.removeItemAt(from);
-      // } else {
-      //   this.todos.splice(to, 0, this.todos.splice(from, 1)[0]);
-      // }
+    onDrop(collection, dropResult) {
+      this[collection] = applyDrag(this[collection], dropResult);
     },
   },
   computed: {
-    dragging() {
-      return this.$store.getters.getDragging;
-    },
     count() {
       if (!this.lists) {
         return 0;
@@ -102,9 +105,8 @@ export default {
     },
   },
   components: {
-    cardItem, addCardItem,
+    cardItem, addCardItem, Container, Draggable,
   },
-
 };
 </script>
 <style lang="scss">
@@ -122,7 +124,7 @@ $color-bg-colum: #303038;
   flex-direction: column;
 }
 .colum__section{
-  margin: 0 8px 8px;
+  margin: 8px 8px 0;
   font-size: 14px;
 }
 .colum__footer {
@@ -139,17 +141,7 @@ $color-bg-colum: #303038;
   &:hover {
     background: $color-button-hover;
   }
-  &::before {
-    position: relative;
-    content: "";
-    width: 24px;
-    height: 24px;
-    background-color: $color-button-text;
-    -webkit-mask: url('../assets/img/baseline-add-24px.svg')
-      no-repeat center;
-    mask: url('../assets/img/baseline-add-24px.svg')
-      no-repeat center;
-  }
+
   &.active{
     cursor: pointer;
     display: inline-block;
@@ -168,17 +160,46 @@ $color-bg-colum: #303038;
     }
   }
 }
-.clear {
+.clear, .add_card{
   cursor: pointer;
   position: relative;
-  top: 7px;
   display: inline-block;
-  width: 24px;
-  height: 24px;
-  background-color: $color-button-text;
-  -webkit-mask: url('../assets/img/baseline-clear-24px.svg') no-repeat center;
-  mask: url('../assets/img/baseline-clear-24px.svg') no-repeat center;
+  width: 14px;
+  height: 14px;
+  &:before,
+  &:after{
+    content: "";
+    position: absolute;
+    background-color: $color-button-text;;
+    transition: transform 0.25s ease-out;
   }
+  &:before{
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    margin-left: -1px;
+  }
+  &:after{
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    margin-top: -1px;
+  }
+}
+.add_card{
+  top: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.clear{
+  top: 4px;
+  &:before,
+  &:after{
+    transform: rotate(45deg);
+  }
+}
 
 @media (max-width: 1080px) {
   .board__colum{

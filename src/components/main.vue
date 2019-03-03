@@ -1,55 +1,54 @@
 <template>
-<section class=" bg-dark">
-  <div class="wrapper">
-    <colum-board header="on hold" color="orange" :lists='listOnHold' type="onHold"/>
-    <colum-board header="in progress" color="blue" :lists='listInProgress' type="inProgress"/>
-    <colum-board header="needs review" color="yellow" :lists='listNeedsReview' type="needsReview"/>
-    <colum-board header="approved" color="green" :lists='listApproved' type="approved"/>
-  </div>
-</section>
+  <section class=" bg-dark">
+    <div class="wrapper">
+      <colum-board
+        header="on hold"
+        color="orange"
+        :lists='listOnHold'
+        type="onHold"
+      />
+      <colum-board
+        header="in progress"
+        color="blue"
+        :lists='listInProgress'
+        type="inProgress"
+      />
+      <colum-board
+        header="needs Review"
+        color="yellow"
+        :lists='listNeedsReview'
+        type="needsReview"/>
+      <colum-board
+        header="approved"
+        color="green"
+        :lists='listApproved'
+        type="approved"
+      />
+    </div>
+  </section>
 </template>
-
 <script>
 import columBoard from './colum.vue';
 
 export default {
   name: 'MainPage',
   computed: {
-    getList() {
-      return this.$store.getters.getList;
-    },
-     listOnHold(state) {
+    listOnHold() {
       return this.$store.getters.getListOnHold;
     },
-    listInProgress(state) {
+    listInProgress() {
       return this.$store.getters.getListInProgress;
     },
-    listNeedsReview(state) {
+    listNeedsReview() {
       return this.$store.getters.getListNeedsReview;
     },
-    listApproved(state) {
+    listApproved() {
       return this.$store.getters.getListApproved;
     },
-
-    // listOnHold() {
-    //   return this.getList.filter(item => item.type === 'on_hold');
-    // },
-    // listInProgress() {
-    //   return this.getList.filter(item => item.type === 'in_progress');
-    // },
-    // listNeedsReview() {
-    //   return this.getList.filter(item => item.type === 'needs_review');
-    // },
-    // listApproved() {
-    //   return this.getList.filter(item => item.type === 'approved');
-    // },
   },
-  components: {
-    columBoard,
-  },
+  components: { columBoard },
 };
 </script>
-
 <style lang="scss">
 $color-bg: #383A42;
 $color-header-orange: #F88B4A;
@@ -80,7 +79,6 @@ $color-header-text: #ECE6E6;
 .yellow {
   background: $color-header-yellow
 }
-
 .colum__header {
   text-transform: uppercase;
   text-align: left;

@@ -1,10 +1,13 @@
 <template>
   <div class="new__block">
-    <textarea :class="{error: isError}"
+    <textarea :class="{error: error}"
       maxlength='80'
       placeholder='Введите заголовок для этой карточки'
       v-model="title"
-      @input="changeTitle">
+      @keyup.esc="show"
+      ref="contentTextArea"
+      @keyup.exact="changeTitle"
+      @keypress="addCard">
     </textarea>
   </div>
 </template>
@@ -14,34 +17,56 @@ export default {
   props: {
     type: String,
     isError: Boolean,
+    show: Function,
+    addCard: Function,
   },
   data() {
     return {
-      title: '',
+      title: null,
+      error: this.isError,
     };
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.$refs.contentTextArea.focus();
+    });
   },
   destroyed() {
     this.clearCard();
   },
-  computed: {
+  watch: {
+    isError() {
+      this.error = this.isError;
+    },
+    title() {
+      const deleteEnter = this.title.replace(/\r?\n/g, '');
+      if (!deleteEnter.length) {
+        this.title = '';
+      }
+      this.title = deleteEnter;
+    },
   },
   methods: {
-    changeTitle(e) {
-      this.$store.commit('setNewCard', { title: this.title, type: this.type });
+    changeTitle() {
+      if (this.title !== '') {
+        this.$store.commit('setNewCard', { title: this.title });
+      } else {
+        this.clearCard();
+      }
     },
     clearCard() {
       this.$store.commit('clearNewCard');
-    }
+    },
   },
 };
 </script>
 <style lang="scss">
 $color-bg-new-block: #515051;
-$color-new-block-text: #7A7A7C;
+$color-new-block-text: #FFF;
 
 .new__block {
   text-align-last: left;
-  margin: 8px 0;
+  margin: 0 0 8px;
   height: 100px;
   background: $color-bg-new-block;
   color: $color-new-block-text
@@ -54,12 +79,13 @@ textarea {
   outline: none;
   -moz-appearance: none;
   background: transparent;
-  border: 0;
+  border: 1px transparent solid;
   padding: 8px;
   resize: none;
   color: $color-new-block-text;
   font-size: 14px;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
+
 }
 .error {
   border: 1px red solid;

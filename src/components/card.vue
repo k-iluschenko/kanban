@@ -1,11 +1,8 @@
 <template>
-  <div class="block"
-  draggable="true"
-  @dragstart="dragstart(list, $event)"
-  @dragend="dragend">
+  <div class="block">
     <div class="wrap__close"><div class="button__close" @click='closeTask'></div></div>
-    <div class="block__title"><span class="id">id: </span>{{list.id}}</div>
-    <div class="block__content">{{list.title}}</div>
+    <div class="block__title"><span class="id">id: </span>{{card.id}}</div>
+    <div class="block__content">{{card.title}}</div>
   </div>
 </template>
 <script>
@@ -13,13 +10,12 @@
 export default {
   name: 'colum',
   props: {
-    list: Object,
-    dragstart: Function,
-    dragend: Function,
+    card: Object,
+    type: String,
   },
   methods: {
-    closeTask(e) {
-      this.$store.dispatch('deleteCard', this.list);
+    closeTask() {
+      this.$store.dispatch('deleteCard', { card: this.card, type: this.type });
     },
   },
 };
@@ -35,7 +31,7 @@ $color-button-text: #82838A;
 }
 .block {
   text-align: left;
-  margin: 8px 0;
+  margin:  0 0 8px;
   height: 100px;
   padding-left: 8px;
   background: $color-bg-block;
